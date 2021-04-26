@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace GmodSerilog
+namespace GmodNET.Serilog.Sink
 {
     public class Class1
     {
