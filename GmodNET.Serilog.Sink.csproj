@@ -1,16 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFrameworks>net5.0;net6.0</TargetFrameworks>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
-  
+
   <ItemGroup>
     <PackageReference Include="GmodNET.VersionTool.MSBuild" Version="2.0.0-alpha.1.41543664.main">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Serilog" Version="2.10.0" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <VersionFile Include="version.json" />
   </ItemGroup>
