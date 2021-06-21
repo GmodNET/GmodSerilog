@@ -35,15 +35,18 @@ namespace GmodNET.Serilog.Sink
             IntPtr lib_handle;
 
             delegate* unmanaged[Cdecl] <IntPtr, void> print_to_console;
+            delegate* unmanaged[Cdecl]<IntPtr, void> warning_to_console;
 
-            if(OperatingSystem.IsWindows())
+            if (OperatingSystem.IsWindows())
             {
                 lib_handle = NativeLibrary.Load(Directory.GetCurrentDirectory() + "\\bin\\win64\\tier0.dll");
                 print_to_console = (delegate* unmanaged[Cdecl] <IntPtr, void>)NativeLibrary.GetExport(lib_handle, "Msg");
+                warning_to_console = (delegate* unmanaged[Cdecl]<IntPtr, void>)NativeLibrary.GetExport(lib_handle, "Warning");
             }
             else
             {
                 print_to_console = (delegate* unmanaged[Cdecl]<IntPtr, void>)0;
+                warning_to_console = (delegate* unmanaged[Cdecl]<IntPtr, void>)0;
             }
 
             writerThread = new Thread(() =>
@@ -53,10 +56,35 @@ namespace GmodNET.Serilog.Sink
                     try
                     {
                         LogEvent logEvent = messages.Take(cancellationTokenSource.Token);
-                        string message = logEvent.RenderMessage(this.formatProvider);
-                        IntPtr c_string = Marshal.StringToCoTaskMemUTF8(message);
-                        print_to_console(c_string);
-                        Marshal.FreeCoTaskMem(c_string);
+                        if (logEvent.Level >= this.logEventLevel)
+                        {
+                            string message = $"[{logEvent.Timestamp.ToString(this.formatProvider)}] ";
+                            message += logEvent.Level switch
+                            {
+                                LogEventLevel.Verbose => "[Verbose] ",
+                                LogEventLevel.Debug => "[Debug] ",
+                                LogEventLevel.Information => "[Information] ",
+                                LogEventLevel.Warning => "[Warning] ",
+                                LogEventLevel.Error => "[Error] ",
+                                LogEventLevel.Fatal => "[Fatal] ",
+                                _ => "[Unknown log level] "
+                            };
+                            message += logEvent.RenderMessage(this.formatProvider) + "\n";
+                            if(logEvent.Exception is not null)
+                            {
+                                message += logEvent.Exception.ToString() + "\n";
+                            }
+                            IntPtr c_string = Marshal.StringToCoTaskMemUTF8(message);
+                            if (logEvent.Level >= LogEventLevel.Warning)
+                            {
+                                warning_to_console(c_string);
+                            }
+                            else
+                            {
+                                print_to_console(c_string);
+                            }
+                            Marshal.FreeCoTaskMem(c_string);
+                        }
                     }
                     catch(OperationCanceledException)
                     {
