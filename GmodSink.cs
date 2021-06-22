@@ -40,14 +40,25 @@ namespace GmodNET.Serilog.Sink
             if (OperatingSystem.IsWindows())
             {
                 lib_handle = NativeLibrary.Load(Directory.GetCurrentDirectory() + "\\bin\\win64\\tier0.dll");
-                print_to_console = (delegate* unmanaged[Cdecl] <IntPtr, void>)NativeLibrary.GetExport(lib_handle, "Msg");
-                warning_to_console = (delegate* unmanaged[Cdecl]<IntPtr, void>)NativeLibrary.GetExport(lib_handle, "Warning");
+            }
+            else if (OperatingSystem.IsMacOS())
+            {
+                lib_handle = NativeLibrary.Load(Directory.GetCurrentDirectory() + "/GarrysMod_Signed.app/Contents/MacOS/libtier0.dylib");
+            }
+            else if(OperatingSystem.IsLinux())
+            {
+                if (!NativeLibrary.TryLoad(Directory.GetCurrentDirectory() + "/bin/linux64/libtier0.so", out lib_handle))
+                {
+                    lib_handle = NativeLibrary.Load(Directory.GetCurrentDirectory() + "/bin/linux64/libtier0_client.so");
+                }
             }
             else
             {
-                print_to_console = (delegate* unmanaged[Cdecl]<IntPtr, void>)0;
-                warning_to_console = (delegate* unmanaged[Cdecl]<IntPtr, void>)0;
+                throw new PlatformNotSupportedException();
             }
+
+            print_to_console = (delegate* unmanaged[Cdecl]<IntPtr, void>)NativeLibrary.GetExport(lib_handle, "Msg");
+            warning_to_console = (delegate* unmanaged[Cdecl]<IntPtr, void>)NativeLibrary.GetExport(lib_handle, "Warning");
 
             writerThread = new Thread(() =>
             {
