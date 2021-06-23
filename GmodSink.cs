@@ -9,6 +9,7 @@ using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
 using System.IO;
 using System.Runtime.Loader;
+using System.Diagnostics;
 
 namespace GmodNET.Serilog.Sink
 {
@@ -80,6 +81,25 @@ namespace GmodNET.Serilog.Sink
                                 LogEventLevel.Fatal => "[Fatal] ",
                                 _ => "[Unknown log level] "
                             };
+                            if (OperatingSystem.IsLinux() && Process.GetCurrentProcess().ProcessName == "srcds")
+                            {
+                                if (logEvent.Level == LogEventLevel.Warning)
+                                {
+                                    message = "\u001B[38;5;11m" + message + "\u001B[0m";
+                                }
+                                else if (logEvent.Level >= LogEventLevel.Error)
+                                {
+                                    message = "\u001B[38;5;9m" + message + "\u001B[0m";
+                                }
+                                else if (logEvent.Level == LogEventLevel.Information)
+                                {
+                                    message = "\u001B[38;5;10m" + message + "\u001B[0m";
+                                }
+                                else
+                                {
+                                    message = "\u001B[38;5;14m" + message + "\u001B[0m";
+                                }
+                            }
                             message += logEvent.RenderMessage(this.formatProvider) + "\n";
                             if(logEvent.Exception is not null)
                             {
