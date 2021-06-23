@@ -142,9 +142,9 @@ namespace GmodNET.Serilog.Sink
 
     public static class GmodSinkExtensions
     {
-        public static LoggerConfiguration GmodSink(this LoggerSinkConfiguration loggerConfiguration, IFormatProvider formatProvider = null)
+        public static LoggerConfiguration GmodSink(this LoggerSinkConfiguration loggerConfiguration, LogEventLevel restrictedToMinimumLevel = LogEventLevel.Verbose, IFormatProvider formatProvider = null)
         {
-            return loggerConfiguration.Sink(new GmodSink(formatProvider, LogEventLevel.Verbose));
+            return loggerConfiguration.Sink(new GmodSink(formatProvider, restrictedToMinimumLevel));
         }
     }
 }
