@@ -1,0 +1,24 @@
+name: CI
+
+on: [push, pull_request]
+
+env:
+  DOTNET_SDK_VERSION: '6.0.100-preview.5.21302.13'
+
+jobs:
+
+  linux-build:
+
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.0.0
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v1.7.2
+        with:
+          dotnet-version: ${{ env.DOTNET_SDK_VERSION }}
+
+      - name: Build
+        run: dotnet build -c Release
