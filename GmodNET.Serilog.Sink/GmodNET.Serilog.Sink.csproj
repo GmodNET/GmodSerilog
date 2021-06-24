@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <VersionFile Include="version.json" />
+    <VersionFile Include="../version.json" />
   </ItemGroup>
 
 </Project>
