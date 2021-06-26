@@ -5,6 +5,8 @@ VisualStudioVersion = 16.0.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GmodNET.Serilog.Sink", "GmodNET.Serilog.Sink\GmodNET.Serilog.Sink.csproj", "{CEDA8460-74B0-4E6F-9C7D-12B04E01B1F4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{A0BE4284-32DB-496F-9E66-331BE39645DC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,17 @@ Global
 		{CEDA8460-74B0-4E6F-9C7D-12B04E01B1F4}.Release|x64.Build.0 = Release|Any CPU
 		{CEDA8460-74B0-4E6F-9C7D-12B04E01B1F4}.Release|x86.ActiveCfg = Release|Any CPU
 		{CEDA8460-74B0-4E6F-9C7D-12B04E01B1F4}.Release|x86.Build.0 = Release|Any CPU
+		{A0BE4284-32DB-496F-9E66-331BE39645DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A0BE4284-32DB-496F-9E66-331BE39645DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A0BE4284-32DB-496F-9E66-331BE39645DC}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A0BE4284-32DB-496F-9E66-331BE39645DC}.Debug|x64.Build.0 = Debug|Any CPU
+		{A0BE4284-32DB-496F-9E66-331BE39645DC}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A0BE4284-32DB-496F-9E66-331BE39645DC}.Debug|x86.Build.0 = Debug|Any CPU
+		{A0BE4284-32DB-496F-9E66-331BE39645DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A0BE4284-32DB-496F-9E66-331BE39645DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A0BE4284-32DB-496F-9E66-331BE39645DC}.Release|x64.ActiveCfg = Release|Any CPU
+		{A0BE4284-32DB-496F-9E66-331BE39645DC}.Release|x64.Build.0 = Release|Any CPU
+		{A0BE4284-32DB-496F-9E66-331BE39645DC}.Release|x86.ActiveCfg = Release|Any CPU
+		{A0BE4284-32DB-496F-9E66-331BE39645DC}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
