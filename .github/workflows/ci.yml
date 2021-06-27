@@ -43,7 +43,7 @@ jobs:
         working-directory: ./gmod/
         run: |
              ls
-             ./srcds_run_x64 -game garrysmod -systemtest -condebug +sv_hibernate_think 1
+             ./srcds_run_x64 -game garrysmod -systemtest -condebug +sv_hibernate_think 1 +lua_run require("dotnet") +lua_run dotnet.load("Tests")
         continue-on-error: true
         timeout-minutes: 1
 
