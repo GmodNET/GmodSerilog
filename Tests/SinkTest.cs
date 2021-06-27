@@ -18,48 +18,46 @@ namespace Tests
 
         public void Load(ILua lua, bool is_serverside, ModuleAssemblyLoadContext assembly_context)
         {
-            Logger log1 = new LoggerConfiguration()
-                .WriteTo.GmodSink()
-                .CreateLogger();
-
-            string VerboseMessage1 = Guid.NewGuid().ToString();
-            string DebugMessage1 = Guid.NewGuid().ToString();
-            string InformationMessage1 = Guid.NewGuid().ToString();
-            string ErrorMessage1 = Guid.NewGuid().ToString();
-            string FatalMessage1 = Guid.NewGuid().ToString();
-
-            log1.Verbose(VerboseMessage1);
-            log1.Debug(DebugMessage1);
-            log1.Information(InformationMessage1);
-            log1.Error(ErrorMessage1);
-            log1.Fatal(FatalMessage1);
-
-            Thread.Sleep(1000);
-
-            string console_log;
-
             try
             {
-                console_log = File.ReadAllText("console.log");
+                Logger log1 = new LoggerConfiguration()
+                    .MinimumLevel.Verbose()
+                    .WriteTo.GmodSink()
+                    .CreateLogger();
+
+                string VerboseMessage1 = Guid.NewGuid().ToString();
+                string DebugMessage1 = Guid.NewGuid().ToString();
+                string InformationMessage1 = Guid.NewGuid().ToString();
+                string ErrorMessage1 = Guid.NewGuid().ToString();
+                string FatalMessage1 = Guid.NewGuid().ToString();
+
+                log1.Verbose(VerboseMessage1);
+                log1.Debug(DebugMessage1);
+                log1.Information(InformationMessage1);
+                log1.Error(ErrorMessage1);
+                log1.Fatal(FatalMessage1);
+
+                Thread.Sleep(2000);
+
+                string console_log = File.ReadAllText("garrysmod/console.log");
+
+                if (!Regex.IsMatch(console_log, @$"\[Verbose\].+{DebugMessage1}$", RegexOptions.ECMAScript | RegexOptions.Multiline | RegexOptions.Compiled))
+                {
+                    throw new Exception("Verbose message 1 test failed");
+                }
+
+                File.WriteAllText("test-success.txt", "success");
+
+                lua.Print("Tests PASSED!");
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                lua.Print($"ERROR: Unable to read console log file: {e.ToString()}");
-                return;
+                lua.Print($"ERROR Tests faild: {e.ToString()}");
             }
-
-            if(!Regex.IsMatch(console_log, @$"\[Verbose\].+{DebugMessage1}$", RegexOptions.ECMAScript | RegexOptions.Multiline | RegexOptions.Compiled))
+            finally
             {
-                lua.Print("ERROR: Verbose message 1 is incorrect");
-                return;
+                lua.CloseGame();
             }
-
-            File.WriteAllText("test-success.txt", "success");
-
-            lua.PushSpecial(SPECIAL_TABLES.SPECIAL_GLOB);
-            lua.GetField(-1, "engine");
-            lua.GetField(-1, "CloseServer");
-            lua.MCall(0, 0);
         }
 
         public void Unload(ILua lua)
@@ -77,6 +75,15 @@ namespace Tests
             lua.PushString(message);
             lua.MCall(1, 0);
             lua.Pop(1);
+        }
+
+        public static void CloseGame(this ILua lua)
+        {
+            lua.PushSpecial(SPECIAL_TABLES.SPECIAL_GLOB);
+            lua.GetField(-1, "engine");
+            lua.GetField(-1, "CloseServer");
+            lua.MCall(0, 0);
+            lua.Pop(2);
         }
     }
 }
