@@ -37,7 +37,7 @@ jobs:
              rm -rfv gmod-dot-net-linux.${{ env.GMOD_DOT_NET_VERSION }}.tar.gz
 
       - name: Copy Lua file
-        run: cp tests-run.lua ./garrysmod/lua/autorun/
+        run: cp tests-run.lua ./garrysmod/lua/autorun
 
       - name: Run Garry's Mod
         working-directory: ./garrysmod/
