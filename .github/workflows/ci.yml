@@ -46,7 +46,7 @@ jobs:
         timeout-minutes: 1
 
       - name: Print console log
-        working-directory: ./gmod/
+        working-directory: ./gmod/garrysmod/
         run: cat console.log
       
       - name: Check tests success
