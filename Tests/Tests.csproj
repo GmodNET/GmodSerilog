@@ -1,7 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="GmodNET.API" Version="0.7.0-beta.2.46713465.main" />
+    <ProjectReference Include="../GmodNET.Serilog.Sink/GmodNET.Serilog.Sink.csproj" />
+  </ItemGroup>
 
 </Project>
