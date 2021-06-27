@@ -41,7 +41,9 @@ jobs:
 
       - name: Run Garry's Mod
         working-directory: ./garrysmod/
-        run: ./srcds_run_x64 -game garrysmod -systemtest -condebug +sv_hibernate_think 1
+        run: |
+             ls
+             ./srcds_run_x64 -game garrysmod -systemtest -condebug +sv_hibernate_think 1
         continue-on-error: true
         timeout-minutes: 1
 
