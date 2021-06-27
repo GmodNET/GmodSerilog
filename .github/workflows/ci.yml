@@ -40,7 +40,7 @@ jobs:
         run: cp tests-run.lua ./gmod/garrysmod/lua/autorun
 
       - name: Run Garry's Mod
-        working-directory: ./gmod/garrysmod/
+        working-directory: ./gmod/
         run: |
              ls
              ./srcds_run_x64 -game garrysmod -systemtest -condebug +sv_hibernate_think 1
@@ -48,9 +48,9 @@ jobs:
         timeout-minutes: 1
 
       - name: Print console log
-        working-directory: ./gmod/garrysmod/
+        working-directory: ./gmod/
         run: cat console.log
       
       - name: Check tests success
-        working-directory: ./gmod/garrysmod/
+        working-directory: ./gmod/
         run: cat test-success.txt
