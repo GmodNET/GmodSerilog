@@ -55,6 +55,11 @@ namespace Tests
             }
 
             File.WriteAllText("test-success.txt", "success");
+
+            lua.PushSpecial(SPECIAL_TABLES.SPECIAL_GLOB);
+            lua.GetField(-1, "engine");
+            lua.GetField(-1, "CloseServer");
+            lua.MCall(0, 0);
         }
 
         public void Unload(ILua lua)

@@ -4,6 +4,7 @@ on: [push, pull_request]
 
 env:
   DOTNET_SDK_VERSION: '6.0.100-preview.5.21302.13'
+  GMOD_DOT_NET_VERSION: '0.7.0-beta.2.46713465.main'
 
 jobs:
   linux-build:
@@ -18,5 +19,36 @@ jobs:
         with:
           dotnet-version: ${{ env.DOTNET_SDK_VERSION }}
 
-      - name: Build
-        run: dotnet build -c Release
+      - name: Download Steam and install garrysmod
+        run: |
+             wget https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz
+             tar -xvzf steamcmd_linux.tar.gz
+             rm -rfv steamcmd_linux.tar.gz
+             ./steamcmd.sh +login anonymous +force_install_dir ./ "+app_update 4020 -beta x86-64 validate" +quit
+
+      - name: Publish Test
+        run: dotnet publish ./Tests/Tests.csproj -c Release -o ./garrysmod/lua/bin/Modules/Tests
+
+      - name: Download GmodDotNet
+        working-directory: ./garrysmod/lua/bin/
+        run: |
+             wget https://gleb-krasilich.fra1.digitaloceanspaces.com/GmodNETStorage/storage/gmod-dot-net-linux.{{ env.GMOD_DOT_NET_VERSION }}.tar.gz
+             tar -xvfz {{ env.GMOD_DOT_NET_VERSION }}.tar.gz
+             rm -rfv {{ env.GMOD_DOT_NET_VERSION }}.tar.gz
+
+      - name: Copy Lua file
+        run: cp tests-run.lua ./garrysmod/lua/autorun/
+
+      - name: Run Garry's Mod
+        working-directory: ./garrysmod/
+        run: ./srcds_run_x64 -game garrysmod -systemtest -condebug +sv_hibernate_think 1
+        continue-on-error: true
+        timeout-minutes: 1
+
+      - name: Print console log
+        working-directory: ./garrysmod/
+        run: cat console.log
+      
+      - name: Check tests success
+        working-directory: ./garrysmod/
+        run: cat test-success.txt
