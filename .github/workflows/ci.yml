@@ -33,7 +33,7 @@ jobs:
         working-directory: ./garrysmod/lua/bin/
         run: |
              wget https://gleb-krasilich.fra1.digitaloceanspaces.com/GmodNETStorage/storage/gmod-dot-net-linux.${{ env.GMOD_DOT_NET_VERSION }}.tar.gz
-             tar -xvfz gmod-dot-net-linux.${{ env.GMOD_DOT_NET_VERSION }}.tar.gz
+             tar -xvf gmod-dot-net-linux.${{ env.GMOD_DOT_NET_VERSION }}.tar.gz
              rm -rfv gmod-dot-net-linux.${{ env.GMOD_DOT_NET_VERSION }}.tar.gz
 
       - name: Copy Lua file
