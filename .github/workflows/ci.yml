@@ -24,23 +24,23 @@ jobs:
              wget https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz
              tar -xvzf steamcmd_linux.tar.gz
              rm -rfv steamcmd_linux.tar.gz
-             ./steamcmd.sh +login anonymous +force_install_dir ./ "+app_update 4020 -beta x86-64 validate" +quit
+             ./steamcmd.sh +login anonymous +force_install_dir gmod "+app_update 4020 -beta x86-64 validate" +quit
 
       - name: Publish Test
-        run: dotnet publish ./Tests/Tests.csproj -c Release -o ./garrysmod/lua/bin/Modules/Tests
+        run: dotnet publish ./Tests/Tests.csproj -c Release -o ./gmod/garrysmod/lua/bin/Modules/Tests
 
       - name: Download GmodDotNet
-        working-directory: ./garrysmod/lua/bin/
+        working-directory: ./gmod/garrysmod/lua/bin/
         run: |
              wget https://gleb-krasilich.fra1.digitaloceanspaces.com/GmodNETStorage/storage/gmod-dot-net-linux.${{ env.GMOD_DOT_NET_VERSION }}.tar.gz
              tar -xvf gmod-dot-net-linux.${{ env.GMOD_DOT_NET_VERSION }}.tar.gz
              rm -rfv gmod-dot-net-linux.${{ env.GMOD_DOT_NET_VERSION }}.tar.gz
 
       - name: Copy Lua file
-        run: cp tests-run.lua ./garrysmod/lua/autorun
+        run: cp tests-run.lua ./gmod/garrysmod/lua/autorun
 
       - name: Run Garry's Mod
-        working-directory: ./garrysmod/
+        working-directory: ./gmod/garrysmod/
         run: |
              ls
              ./srcds_run_x64 -game garrysmod -systemtest -condebug +sv_hibernate_think 1
@@ -48,9 +48,9 @@ jobs:
         timeout-minutes: 1
 
       - name: Print console log
-        working-directory: ./garrysmod/
+        working-directory: ./gmod/garrysmod/
         run: cat console.log
       
       - name: Check tests success
-        working-directory: ./garrysmod/
+        working-directory: ./gmod/garrysmod/
         run: cat test-success.txt
