@@ -73,7 +73,10 @@ namespace Tests
 
                     Thread.Sleep(2000);
 
-                    string console_log = File.ReadAllText("garrysmod/console.log");
+                    FileStream fileStream = File.Open("garrysmod/console.log", FileMode.Open, FileAccess.Read, FileShare.Read);
+                    StreamReader streamReader = new StreamReader(fileStream);
+
+                    string console_log = streamReader.ReadToEnd();
 
                     if (!Regex.IsMatch(console_log, @$"\[Verbose\].+{VerboseMessage1}$", RegexOptions.ECMAScript | RegexOptions.Multiline | RegexOptions.Compiled))
                     {
