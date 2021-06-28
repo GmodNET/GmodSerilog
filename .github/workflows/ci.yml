@@ -70,7 +70,7 @@ jobs:
         run: |
              Invoke-WebRequest -Uri https://steamcdn-a.akamaihd.net/client/installer/steamcmd.zip -OutFile steamcmd.zip
              Expand-Archive -Path steamcmd.zip -DestinationPath .\
-             ./steamcmd.exe +login anonymous +force_install_dir gmod "+app_update 4020 -beta x86-64 validate" +quit
+             ./steamcmd.exe +login anonymous +force_install_dir gmod "+app_update 4020 -beta x86-64 validate" +quit || True
 
       - name: Publish Tests
         run: dotnet publish ./Tests/Tests.csproj -c Release -o ./gmod/garrysmod/lua/bin/Modules/Tests
