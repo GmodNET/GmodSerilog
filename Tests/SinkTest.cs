@@ -16,48 +16,77 @@ namespace Tests
 
         public string ModuleVersion => FileVersionInfo.GetVersionInfo(typeof(IModule).Assembly.Location).FileVersion;
 
+        string tickEventId;
+
+        public SinkTest()
+        {
+            tickEventId = Guid.NewGuid().ToString();
+        }
+
         public void Load(ILua lua, bool is_serverside, ModuleAssemblyLoadContext assembly_context)
         {
-            try
+            lua.PushGlobalTable();
+            lua.GetField(-1, "hook");
+            lua.GetField(-1, "Add");
+            lua.PushString("Tick");
+            lua.PushString(tickEventId);
+            lua.PushManagedFunction(lua =>
             {
-                Logger log1 = new LoggerConfiguration()
-                    .MinimumLevel.Verbose()
-                    .WriteTo.GmodSink()
-                    .CreateLogger();
-
-                string VerboseMessage1 = Guid.NewGuid().ToString();
-                string DebugMessage1 = Guid.NewGuid().ToString();
-                string InformationMessage1 = Guid.NewGuid().ToString();
-                string ErrorMessage1 = Guid.NewGuid().ToString();
-                string FatalMessage1 = Guid.NewGuid().ToString();
-
-                log1.Verbose(VerboseMessage1);
-                log1.Debug(DebugMessage1);
-                log1.Information(InformationMessage1);
-                log1.Error(ErrorMessage1);
-                log1.Fatal(FatalMessage1);
-
-                Thread.Sleep(2000);
-
-                string console_log = File.ReadAllText("garrysmod/console.log");
-
-                if (!Regex.IsMatch(console_log, @$"\[Verbose\].+{DebugMessage1}$", RegexOptions.ECMAScript | RegexOptions.Multiline | RegexOptions.Compiled))
+                try
                 {
-                    throw new Exception("Verbose message 1 test failed");
+                    lua.Print("Test started");
+
+                    Logger log1 = new LoggerConfiguration()
+                        .MinimumLevel.Verbose()
+                        .WriteTo.GmodSink()
+                        .CreateLogger();
+
+                    string VerboseMessage1 = Guid.NewGuid().ToString();
+                    string DebugMessage1 = Guid.NewGuid().ToString();
+                    string InformationMessage1 = Guid.NewGuid().ToString();
+                    string ErrorMessage1 = Guid.NewGuid().ToString();
+                    string FatalMessage1 = Guid.NewGuid().ToString();
+
+                    log1.Verbose(VerboseMessage1);
+                    log1.Debug(DebugMessage1);
+                    log1.Information(InformationMessage1);
+                    log1.Error(ErrorMessage1);
+                    log1.Fatal(FatalMessage1);
+
+                    Thread.Sleep(2000);
+
+                    string console_log = File.ReadAllText("garrysmod/console.log");
+
+                    if (!Regex.IsMatch(console_log, @$"\[Verbose\].+{DebugMessage1}$", RegexOptions.ECMAScript | RegexOptions.Multiline | RegexOptions.Compiled))
+                    {
+                        throw new Exception("Verbose message 1 test failed");
+                    }
+
+                    File.WriteAllText("test-success.txt", "success");
+
+                    lua.Print("Tests PASSED!");
+                }
+                catch (Exception e)
+                {
+                    lua.Print($"ERROR Tests faild: {e.ToString()}");
+                }
+                finally
+                {
+                    lua.PushGlobalTable();
+                    lua.GetField(-1, "hook");
+                    lua.GetField(-1, "Remove");
+                    lua.PushString("Tick");
+                    lua.PushString(this.tickEventId);
+                    lua.MCall(2, 0);
+                    lua.Pop(2);
+
+                    lua.CloseGame();
                 }
 
-                File.WriteAllText("test-success.txt", "success");
-
-                lua.Print("Tests PASSED!");
-            }
-            catch (Exception e)
-            {
-                lua.Print($"ERROR Tests faild: {e.ToString()}");
-            }
-            finally
-            {
-                lua.CloseGame();
-            }
+                return 0;
+            });
+            lua.MCall(3, 0);
+            lua.Pop(2);
         }
 
         public void Unload(ILua lua)
