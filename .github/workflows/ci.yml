@@ -70,4 +70,37 @@ jobs:
         run: |
              Invoke-WebRequest -Uri https://steamcdn-a.akamaihd.net/client/installer/steamcmd.zip -OutFile steamcmd.zip
              Expand-Archive -Path steamcmd.zip -DestinationPath .\
-             ./steamcmd.exe +login anonymous +force_install_dir gmod "+app_update 4020 -beta x86-64 validate" +quit || true
+             ./steamcmd.exe +login anonymous +force_install_dir gmod "+app_update 4020 -beta x86-64 validate" +quit
+
+      - name: Publish Tests
+        run: dotnet publish ./Tests/Tests.csproj -c Release -o ./gmod/garrysmod/lua/bin/Modules/Tests
+
+      - name: Download GmodDotNet
+        working-directory: ./gmod/garrysmod/lua/bin/
+        shell: pwsh
+        run: |
+             Invoke-WebRequest -Uri https://gleb-krasilich.fra1.digitaloceanspaces.com/GmodNETStorage/storage/gmod-dot-net-windows.${{ env.GMOD_DOT_NET_VERSION }}.zip -OutFile gmodnet.zip
+             Expand-Archive -Path gmodnet.zip -DestinationPath .\
+
+      - name: Copy Lua file
+        shell: pwsh
+        run: Copy-Item "tests-run.lua" -Destination "./gmod/garrysmod/lua/autorun"
+
+      - name: Run Garry's Mod
+        working-directory: ./gmod/
+        shell: pwsh
+        run: |
+             ./srcds_win64.exe -console -systemtest -condebug -game "garrysmod" +exec "server.cfg" +gamemode sandbox +map gm_construct +maxplayers 16 +sv_hibernate_think 1
+             Wait-Process -Name srcds_win64
+        continue-on-error: true
+        timeout-minutes: 1
+
+      - name: Print console log
+        working-directory: ./gmod/garrysmod/
+        shell: bash
+        run: cat console.log
+
+      - name: Check tests success
+        working-directory: ./gmod/
+        shell: bash
+        run: cat test-success.txt
