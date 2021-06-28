@@ -7,7 +7,7 @@ env:
   GMOD_DOT_NET_VERSION: '0.7.0-beta.2.46713465.main'
 
 jobs:
-  linux-build:
+  linux-test:
     runs-on: ubuntu-20.04
 
     steps:
@@ -52,3 +52,22 @@ jobs:
       - name: Check tests success
         working-directory: ./gmod/
         run: cat test-success.txt
+
+  windows-test:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.0.0
+      
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v1.7.2
+        with:
+          dotnet-version: ${{ env.DOTNET_SDK_VERSION }}
+
+      - name: Download Steam and install Garrys Mod
+        shell: pwsh
+        run: |
+             Invoke-WebRequest -Uri https://steamcdn-a.akamaihd.net/client/installer/steamcmd.zip -OutFile steamcmd.zip
+             Expand-Archive -Path steamcmd.zip -DestinationPath .\
+             ./steamcmd.exe +login anonymous +force_install_dir gmod "+app_update 4020 -beta x86-64 validate" +quit || true
