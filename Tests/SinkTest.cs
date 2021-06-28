@@ -47,6 +47,8 @@ namespace Tests
                     string WarningMessage1 = Guid.NewGuid().ToString();
                     string ErrorMessage1 = Guid.NewGuid().ToString();
                     string FatalMessage1 = Guid.NewGuid().ToString();
+                    string FatalWithExceptionMessage1 = Guid.NewGuid().ToString();
+                    Exception FatalException1 = new Exception(Guid.NewGuid().ToString());
 
                     log1.Verbose(VerboseMessage1);
                     log1.Debug(DebugMessage1);
@@ -54,6 +56,7 @@ namespace Tests
                     log1.Warning(WarningMessage1);
                     log1.Error(ErrorMessage1);
                     log1.Fatal(FatalMessage1);
+                    log1.Fatal(FatalException1, FatalWithExceptionMessage1);
 
                     Thread.Sleep(2000);
 
@@ -82,6 +85,11 @@ namespace Tests
                     if (!Regex.IsMatch(console_log, @$"\[Fatal\].+{FatalMessage1}$", RegexOptions.ECMAScript | RegexOptions.Multiline | RegexOptions.Compiled))
                     {
                         throw new Exception("Fatal message 1 test failed");
+                    }
+                    if (!Regex.IsMatch(console_log, @$"\[Fatal\].+{FatalWithExceptionMessage1}\n{FatalException1.ToString()}$", 
+                        RegexOptions.ECMAScript | RegexOptions.Multiline | RegexOptions.Compiled))
+                    {
+                        throw new Exception("Fatal message with exception 1 test failed");
                     }
 
                     File.WriteAllText("test-success.txt", "success");
