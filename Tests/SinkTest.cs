@@ -78,45 +78,45 @@ namespace Tests
 
                     string console_log = streamReader.ReadToEnd();
 
-                    if (!Regex.IsMatch(console_log, @$"\[Verbose\].+{VerboseMessage1}$", RegexOptions.ECMAScript | RegexOptions.Multiline | RegexOptions.Compiled))
+                    if (!Regex.IsMatch(console_log, @$"\[Verbose\].+{VerboseMessage1}\r{{0,1}}$", RegexOptions.ECMAScript | RegexOptions.Multiline | RegexOptions.Compiled))
                     {
                         throw new Exception("Verbose message 1 test failed");
                     }
-                    if (!Regex.IsMatch(console_log, @$"\[Debug\].+{DebugMessage1}$", RegexOptions.ECMAScript | RegexOptions.Multiline | RegexOptions.Compiled))
+                    if (!Regex.IsMatch(console_log, @$"\[Debug\].+{DebugMessage1}\r{{0,1}}$", RegexOptions.ECMAScript | RegexOptions.Multiline | RegexOptions.Compiled))
                     {
                         throw new Exception("Debug message 1 test failed");
                     }
-                    if (!Regex.IsMatch(console_log, @$"\[Information\].+{InformationMessage1}$", RegexOptions.ECMAScript | RegexOptions.Multiline | RegexOptions.Compiled))
+                    if (!Regex.IsMatch(console_log, @$"\[Information\].+{InformationMessage1}\r{{0,1}}$", RegexOptions.ECMAScript | RegexOptions.Multiline | RegexOptions.Compiled))
                     {
                         throw new Exception("Information message 1 test failed");
                     }
-                    if (!Regex.IsMatch(console_log, @$"\[Warning\].+{WarningMessage1}$", RegexOptions.ECMAScript | RegexOptions.Multiline | RegexOptions.Compiled))
+                    if (!Regex.IsMatch(console_log, @$"\[Warning\].+{WarningMessage1}\r{{0,1}}$", RegexOptions.ECMAScript | RegexOptions.Multiline | RegexOptions.Compiled))
                     {
                         throw new Exception("Warning message 1 test failed");
                     }
-                    if (!Regex.IsMatch(console_log, @$"\[Error\].+{ErrorMessage1}$", RegexOptions.ECMAScript | RegexOptions.Multiline | RegexOptions.Compiled))
+                    if (!Regex.IsMatch(console_log, @$"\[Error\].+{ErrorMessage1}\r{{0,1}}$", RegexOptions.ECMAScript | RegexOptions.Multiline | RegexOptions.Compiled))
                     {
                         throw new Exception("Error message 1 test failed");
                     }
-                    if (!Regex.IsMatch(console_log, @$"\[Fatal\].+{FatalMessage1}$", RegexOptions.ECMAScript | RegexOptions.Multiline | RegexOptions.Compiled))
+                    if (!Regex.IsMatch(console_log, @$"\[Fatal\].+{FatalMessage1}\r{{0,1}}$", RegexOptions.ECMAScript | RegexOptions.Multiline | RegexOptions.Compiled))
                     {
                         throw new Exception("Fatal message 1 test failed");
                     }
-                    if (!Regex.IsMatch(console_log, @$"\[Fatal\].+{FatalWithExceptionMessage1}\n{FatalException1.ToString()}$", 
+                    if (!Regex.IsMatch(console_log, @$"\[Fatal\].+{FatalWithExceptionMessage1}\r{{0,1}}\n{FatalException1.ToString()}\r{{0,1}}$", 
                         RegexOptions.ECMAScript | RegexOptions.Multiline | RegexOptions.Compiled))
                     {
                         throw new Exception("Fatal message with exception 1 test failed");
                     }
 
-                    if (Regex.IsMatch(console_log, @$"\[Information\].+{InformationMessage2}$", RegexOptions.ECMAScript | RegexOptions.Multiline | RegexOptions.Compiled))
+                    if (Regex.IsMatch(console_log, @$"\[Information\].+{InformationMessage2}\r{{0,1}}$", RegexOptions.ECMAScript | RegexOptions.Multiline | RegexOptions.Compiled))
                     {
                         throw new Exception("Information message 2 test failed (must not be present in the log)");
                     }
-                    if (!Regex.IsMatch(console_log, @$"\[Warning\].+{WarningMessage2}$", RegexOptions.ECMAScript | RegexOptions.Multiline | RegexOptions.Compiled))
+                    if (!Regex.IsMatch(console_log, @$"\[Warning\].+{WarningMessage2}\r{{0,1}}$", RegexOptions.ECMAScript | RegexOptions.Multiline | RegexOptions.Compiled))
                     {
                         throw new Exception("Warning message 2 test failed");
                     }
-                    if (!Regex.IsMatch(console_log, @$"\[Error\].+{ErrorMessage2}$", RegexOptions.ECMAScript | RegexOptions.Multiline | RegexOptions.Compiled))
+                    if (!Regex.IsMatch(console_log, @$"\[Error\].+{ErrorMessage2}\r{{0,1}}$", RegexOptions.ECMAScript | RegexOptions.Multiline | RegexOptions.Compiled))
                     {
                         throw new Exception("Error message 2 test failed");
                     }
