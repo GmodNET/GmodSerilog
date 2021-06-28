@@ -92,6 +92,28 @@ namespace Tests
                         throw new Exception("Fatal message with exception 1 test failed");
                     }
 
+                    Logger log2 = new LoggerConfiguration()
+                        .MinimumLevel.Verbose()
+                        .WriteTo.GmodSink(restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Warning)
+                        .CreateLogger();
+
+                    string InformationMessage2 = Guid.NewGuid().ToString();
+                    string WarningMessage2 = Guid.NewGuid().ToString();
+                    string ErrorMessage2 = Guid.NewGuid().ToString();
+
+                    if (Regex.IsMatch(console_log, @$"\[Information\].+{InformationMessage2}$", RegexOptions.ECMAScript | RegexOptions.Multiline | RegexOptions.Compiled))
+                    {
+                        throw new Exception("Information message 2 test failed (must not be present in the log)");
+                    }
+                    if (!Regex.IsMatch(console_log, @$"\[Warning\].+{WarningMessage2}$", RegexOptions.ECMAScript | RegexOptions.Multiline | RegexOptions.Compiled))
+                    {
+                        throw new Exception("Warning message 2 test failed");
+                    }
+                    if (!Regex.IsMatch(console_log, @$"\[Error\].+{ErrorMessage2}$", RegexOptions.ECMAScript | RegexOptions.Multiline | RegexOptions.Compiled))
+                    {
+                        throw new Exception("Error message 2 test failed");
+                    }
+
                     File.WriteAllText("test-success.txt", "success");
 
                     lua.Print("Tests PASSED!");
