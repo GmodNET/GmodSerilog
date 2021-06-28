@@ -58,6 +58,19 @@ namespace Tests
                     log1.Fatal(FatalMessage1);
                     log1.Fatal(FatalException1, FatalWithExceptionMessage1);
 
+                    Logger log2 = new LoggerConfiguration()
+                        .MinimumLevel.Verbose()
+                        .WriteTo.GmodSink(restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Warning)
+                        .CreateLogger();
+
+                    string InformationMessage2 = Guid.NewGuid().ToString();
+                    string WarningMessage2 = Guid.NewGuid().ToString();
+                    string ErrorMessage2 = Guid.NewGuid().ToString();
+
+                    log2.Information(InformationMessage2);
+                    log2.Warning(WarningMessage2);
+                    log2.Error(ErrorMessage2);
+
                     Thread.Sleep(2000);
 
                     string console_log = File.ReadAllText("garrysmod/console.log");
@@ -91,19 +104,6 @@ namespace Tests
                     {
                         throw new Exception("Fatal message with exception 1 test failed");
                     }
-
-                    Logger log2 = new LoggerConfiguration()
-                        .MinimumLevel.Verbose()
-                        .WriteTo.GmodSink(restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Warning)
-                        .CreateLogger();
-
-                    string InformationMessage2 = Guid.NewGuid().ToString();
-                    string WarningMessage2 = Guid.NewGuid().ToString();
-                    string ErrorMessage2 = Guid.NewGuid().ToString();
-
-                    log2.Information(InformationMessage2);
-                    log2.Warning(WarningMessage2);
-                    log2.Error(ErrorMessage2);
 
                     if (Regex.IsMatch(console_log, @$"\[Information\].+{InformationMessage2}$", RegexOptions.ECMAScript | RegexOptions.Multiline | RegexOptions.Compiled))
                     {
