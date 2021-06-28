@@ -67,7 +67,7 @@ namespace Tests
                     {
                         throw new Exception("Debug message 1 test failed");
                     }
-                    if (!Regex.IsMatch(console_log, @$"\[Inforamtion\].+{InformationMessage1}$", RegexOptions.ECMAScript | RegexOptions.Multiline | RegexOptions.Compiled))
+                    if (!Regex.IsMatch(console_log, @$"\[Information\].+{InformationMessage1}$", RegexOptions.ECMAScript | RegexOptions.Multiline | RegexOptions.Compiled))
                     {
                         throw new Exception("Information message 1 test failed");
                     }
