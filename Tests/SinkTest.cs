@@ -57,7 +57,7 @@ namespace Tests
 
                     string console_log = File.ReadAllText("garrysmod/console.log");
 
-                    if (!Regex.IsMatch(console_log, @$"\[Verbose\].+{DebugMessage1}$", RegexOptions.ECMAScript | RegexOptions.Multiline | RegexOptions.Compiled))
+                    if (!Regex.IsMatch(console_log, @$"\[Verbose\].+{VerboseMessage1}$", RegexOptions.ECMAScript | RegexOptions.Multiline | RegexOptions.Compiled))
                     {
                         throw new Exception("Verbose message 1 test failed");
                     }
