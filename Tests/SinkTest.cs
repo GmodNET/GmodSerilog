@@ -73,7 +73,7 @@ namespace Tests
 
                     Thread.Sleep(2000);
 
-                    FileStream fileStream = File.Open("garrysmod/console.log", FileMode.Open, FileAccess.Read, FileShare.Read);
+                    FileStream fileStream = File.Open("garrysmod/console.log", FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
                     StreamReader streamReader = new StreamReader(fileStream);
 
                     string console_log = streamReader.ReadToEnd();
