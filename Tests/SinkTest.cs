@@ -101,6 +101,10 @@ namespace Tests
                     string WarningMessage2 = Guid.NewGuid().ToString();
                     string ErrorMessage2 = Guid.NewGuid().ToString();
 
+                    log2.Information(InformationMessage2);
+                    log2.Warning(WarningMessage2);
+                    log2.Error(ErrorMessage2);
+
                     if (Regex.IsMatch(console_log, @$"\[Information\].+{InformationMessage2}$", RegexOptions.ECMAScript | RegexOptions.Multiline | RegexOptions.Compiled))
                     {
                         throw new Exception("Information message 2 test failed (must not be present in the log)");
