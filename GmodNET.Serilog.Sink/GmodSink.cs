@@ -28,6 +28,11 @@ namespace GmodNET.Serilog.Sink
 
         Thread writerThread;
 
+        /// <summary>
+        /// Initializes a new instance of <see cref="GmodSink"/>.
+        /// </summary>
+        /// <param name="formatProvider">A format provider to format event message.</param>
+        /// <param name="logEventLevel">A minimum level of the events to log.</param>
         public unsafe GmodSink(IFormatProvider formatProvider, LogEventLevel logEventLevel)
         {
             this.formatProvider = formatProvider;
@@ -137,14 +142,28 @@ namespace GmodNET.Serilog.Sink
             };
         }
 
+        /// <summary>
+        /// Emit the provided log event to the sink.
+        /// </summary>
+        /// <param name="logEvent">The log event to write.</param>
         public void Emit(LogEvent logEvent)
         {
             messages.Add(logEvent);
         }
     }
 
+    /// <summary>
+    /// Extends <see cref="LoggerSinkConfiguration"/> with methods to add Garry's Mod console sinks.
+    /// </summary>
     public static class GmodSinkExtensions
     {
+        /// <summary>
+        /// Write log events to the Garry's Mod console.
+        /// </summary>
+        /// <param name="loggerConfiguration">Logger sink configuration.</param>
+        /// <param name="restrictedToMinimumLevel">The minimum level for events passed through the sink.</param>
+        /// <param name="formatProvider">Supplies culture-specific formatting information, or null.</param>
+        /// <returns>Configuration object allowing method chaining.</returns>
         public static LoggerConfiguration GmodSink(this LoggerSinkConfiguration loggerConfiguration, LogEventLevel restrictedToMinimumLevel = LogEventLevel.Verbose, IFormatProvider formatProvider = null)
         {
             return loggerConfiguration.Sink(new GmodSink(formatProvider, restrictedToMinimumLevel));
