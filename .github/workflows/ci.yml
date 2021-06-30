@@ -1,0 +1,139 @@
+name: CI
+
+on:
+  pull_request:
+  push: {}
+  release:
+    types: [published]
+  
+
+env:
+  DOTNET_SDK_VERSION: '6.0.100-preview.5.21302.13'
+  GMOD_DOT_NET_VERSION: '0.7.0-beta.2.46713465.main'
+
+jobs:
+  linux-test:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.0.0
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v1.7.2
+        with:
+          dotnet-version: ${{ env.DOTNET_SDK_VERSION }}
+
+      - name: Download Steam and install garrysmod
+        run: |
+             wget https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz
+             tar -xvzf steamcmd_linux.tar.gz
+             rm -rfv steamcmd_linux.tar.gz
+             ./steamcmd.sh +login anonymous +force_install_dir gmod "+app_update 4020 -beta x86-64 validate" +quit
+
+      - name: Publish Test
+        run: dotnet publish ./Tests/Tests.csproj -c Release -o ./gmod/garrysmod/lua/bin/Modules/Tests
+
+      - name: Download GmodDotNet
+        working-directory: ./gmod/garrysmod/lua/bin/
+        run: |
+             wget https://gleb-krasilich.fra1.digitaloceanspaces.com/GmodNETStorage/storage/gmod-dot-net-linux.${{ env.GMOD_DOT_NET_VERSION }}.tar.gz
+             tar -xvf gmod-dot-net-linux.${{ env.GMOD_DOT_NET_VERSION }}.tar.gz
+             rm -rfv gmod-dot-net-linux.${{ env.GMOD_DOT_NET_VERSION }}.tar.gz
+
+      - name: Copy Lua file
+        run: cp tests-run.lua ./gmod/garrysmod/lua/autorun
+
+      - name: Run Garry's Mod
+        working-directory: ./gmod/
+        run: ./srcds_run_x64 -game garrysmod -systemtest -condebug +sv_hibernate_think 1
+        continue-on-error: true
+        timeout-minutes: 1
+
+      - name: Print console log
+        working-directory: ./gmod/garrysmod/
+        run: cat console.log
+      
+      - name: Check tests success
+        working-directory: ./gmod/
+        run: cat test-success.txt
+
+  windows-test:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.0.0
+      
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v1.7.2
+        with:
+          dotnet-version: ${{ env.DOTNET_SDK_VERSION }}
+
+      - name: Download Steam and install Garrys Mod
+        shell: pwsh
+        run: |
+             Invoke-WebRequest -Uri https://steamcdn-a.akamaihd.net/client/installer/steamcmd.zip -OutFile steamcmd.zip
+             Expand-Archive -Path steamcmd.zip -DestinationPath .\
+             ./steamcmd.exe +login anonymous +force_install_dir gmod "+app_update 4020 -beta x86-64 validate" +quit || True
+
+      - name: Publish Tests
+        run: dotnet publish ./Tests/Tests.csproj -c Release -o ./gmod/garrysmod/lua/bin/Modules/Tests
+
+      - name: Download GmodDotNet
+        working-directory: ./gmod/garrysmod/lua/bin/
+        shell: pwsh
+        run: |
+             Invoke-WebRequest -Uri https://gleb-krasilich.fra1.digitaloceanspaces.com/GmodNETStorage/storage/gmod-dot-net-windows.${{ env.GMOD_DOT_NET_VERSION }}.zip -OutFile gmodnet.zip
+             Expand-Archive -Path gmodnet.zip -DestinationPath .\
+
+      - name: Copy Lua file
+        shell: pwsh
+        run: Copy-Item "tests-run.lua" -Destination "./gmod/garrysmod/lua/autorun"
+
+      - name: Run Garry's Mod
+        working-directory: ./gmod/
+        shell: pwsh
+        run: |
+             ./srcds_win64.exe -console -systemtest -condebug -game "garrysmod" +exec "server.cfg" +gamemode sandbox +map gm_construct +maxplayers 16 +sv_hibernate_think 1
+             Wait-Process -Name srcds_win64
+        continue-on-error: true
+        timeout-minutes: 1
+
+      - name: Print console log
+        working-directory: ./gmod/garrysmod/
+        shell: bash
+        run: cat console.log
+
+      - name: Check tests success
+        working-directory: ./gmod/
+        shell: bash
+        run: cat test-success.txt
+
+  deploy:
+    runs-on: ubuntu-20.04
+
+    needs: [linux-test, windows-test]
+
+    if: ${{ github.event_name != 'pull_request' && github.repository_owner == 'GmodNET' }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.0.0
+
+      - name: Install .NET SDK
+        uses: actions/setup-dotnet@v1.7.2
+        with:
+          dotnet-version: ${{ env.DOTNET_SDK_VERSION }}
+
+      - name: Create NuGet package
+        run: dotnet pack ./GmodNET.Serilog.Sink/GmodNET.Serilog.Sink.csproj -c Release -o nupkgs
+
+      - name: Upload NuGet package to Azure DevOps
+        run: |
+             dotnet nuget update source gmodnet-packages --username CI --password ${{ secrets.DEVOPS_PASSWORD }} --store-password-in-clear-text
+             dotnet nuget push nupkgs/**.nupkg --source gmodnet-packages --api-key az --skip-duplicate
+
+      - name: Upload NuGet package to NuGet.org
+        if: ${{ github.event_name == 'release' }}
+        run: dotnet nuget push nupkgs/**.nupkg --source nuget --api-key ${{ secrets.NUGET_API_KEY }} --skip-duplicate
