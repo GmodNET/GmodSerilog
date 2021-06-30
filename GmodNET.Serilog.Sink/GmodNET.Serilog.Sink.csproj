@@ -3,6 +3,26 @@
   <PropertyGroup>
     <TargetFrameworks>net5.0;net6.0</TargetFrameworks>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DebugType>Portable</DebugType>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Product>GmodNET Serilog Sink</Product>
+    <Description>A Serilog Sink for Garry's Mod Clients' and Servers' consoles.</Description>
+    <RepositoryUrl>https://github.com/GmodNET/GmodSerilog</RepositoryUrl>
+    <RepositoryType>Git</RepositoryType>
+    <PackageTags>garrysmod; GmodNET; Serilog; serilog-sink</PackageTags>
+    <PackageProjectUrl>https://github.com/GmodNET/GmodSerilog</PackageProjectUrl>
+    <Company>GmodNET</Company>
+    <Copyright>Copyright (c) 2018 - 2021 GmodNET</Copyright>
+    <PackageIcon>logo.png</PackageIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -10,10 +30,12 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Serilog" Version="2.10.0" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
   </ItemGroup>
 
   <ItemGroup>
     <VersionFile Include="../version.json" />
+    <Content Include="../logo.png" PackagePath="/" />
   </ItemGroup>
 
 </Project>
