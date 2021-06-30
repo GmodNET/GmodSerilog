@@ -13,6 +13,9 @@ using System.Diagnostics;
 
 namespace GmodNET.Serilog.Sink
 {
+    /// <summary>
+    /// A Serilog Sink which logs events to Garry's Mod game console.
+    /// </summary>
     public class GmodSink : ILogEventSink
     {
         IFormatProvider formatProvider;

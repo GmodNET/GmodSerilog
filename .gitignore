@@ -446,3 +446,6 @@ $RECYCLE.BIN/
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+
+## Generated XML docs
+GmodNET.Serilog.Sink/GmodNET.Serilog.Sink.xml
