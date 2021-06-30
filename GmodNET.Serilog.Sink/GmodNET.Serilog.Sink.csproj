@@ -16,7 +16,7 @@
   <PropertyGroup>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Product>GmodNET Serilog Sink</Product>
-    <Description>A Serilog Sink for Garry's Mod Clients' and Servers' consoles.</Description>
+    <Description>A Serilog Sink for Garry's Mod clients' and servers' consoles for GmodDotNet modules.</Description>
     <RepositoryUrl>https://github.com/GmodNET/GmodSerilog</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
     <PackageTags>garrysmod; GmodNET; Serilog; serilog-sink</PackageTags>
