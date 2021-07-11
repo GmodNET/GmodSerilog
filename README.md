@@ -1,4 +1,7 @@
 # GmodSerilog
+
+[![NuGet Link](https://img.shields.io/nuget/v/GmodNET.Serilog.Sink)](https://www.nuget.org/packages/GmodNET.Serilog.Sink/)
+
 A [Serilog](https://serilog.net/) Sink for Garry's Mod clients' and servers' consoles for [GmodDotNet](https://github.com/GmodNET/GmodDotNet) modules.
 
 ## Usage
