@@ -5,7 +5,7 @@ on:
   push: {}
   release:
     types: [published]
-  
+
 
 env:
   GMOD_DOT_NET_VERSION: '0.7.0-rc.1.56307663.main'
@@ -34,7 +34,7 @@ jobs:
       - name: Download GmodDotNet
         working-directory: ./gmod/garrysmod/lua/bin/
         run: |
-             wget https://github.com/GmodNET/runtime-nightly/releases/download/${{ GMOD_DOT_NET_VERSION }}/gmod-dot-net-linux.${{ GMOD_DOT_NET_VERSION }}.tar.gz
+             wget https://github.com/GmodNET/runtime-nightly/releases/download/${{ env.GMOD_DOT_NET_VERSION }}/gmod-dot-net-linux.${{ env.GMOD_DOT_NET_VERSION }}.tar.gz
              tar -xvf gmod-dot-net-linux.${{ env.GMOD_DOT_NET_VERSION }}.tar.gz
              rm -rfv gmod-dot-net-linux.${{ env.GMOD_DOT_NET_VERSION }}.tar.gz
 
@@ -50,7 +50,7 @@ jobs:
       - name: Print console log
         working-directory: ./gmod/garrysmod/
         run: cat console.log
-      
+
       - name: Check tests success
         working-directory: ./gmod/
         run: cat test-success.txt
@@ -61,7 +61,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2.0.0
-      
+
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v1.8.2
 
@@ -79,7 +79,7 @@ jobs:
         working-directory: ./gmod/garrysmod/lua/bin/
         shell: pwsh
         run: |
-             Invoke-WebRequest -Uri https://github.com/GmodNET/runtime-nightly/releases/download/${{ GMOD_DOT_NET_VERSION }}/gmod-dot-net-windows.${{ GMOD_DOT_NET_VERSION }}.zip -OutFile gmodnet.zip
+             Invoke-WebRequest -Uri https://github.com/GmodNET/runtime-nightly/releases/download/${{ env.GMOD_DOT_NET_VERSION }}/gmod-dot-net-windows.${{ env.GMOD_DOT_NET_VERSION }}.zip -OutFile gmodnet.zip
              Expand-Archive -Path gmodnet.zip -DestinationPath .\
 
       - name: Copy Lua file
@@ -130,7 +130,7 @@ jobs:
       - name: Upload NuGet package to NuGet.org
         if: ${{ github.event_name == 'release' }}
         run: dotnet nuget push nupkgs/**.nupkg --source nuget --api-key ${{ secrets.NUGET_API_KEY }} --skip-duplicate
-        
+
       - name: Upload build to GitHub release
         if: ${{ github.event_name == 'release' }}
         uses: svenstaro/upload-release-action@2.2.1
