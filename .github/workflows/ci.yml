@@ -8,8 +8,7 @@ on:
   
 
 env:
-  DOTNET_SDK_VERSION: '6.0.100-preview.5.21302.13'
-  GMOD_DOT_NET_VERSION: '0.7.0-beta.2.46713465.main'
+  GMOD_DOT_NET_VERSION: '0.7.0-rc.1.56307663.main'
 
 jobs:
   linux-test:
@@ -20,9 +19,7 @@ jobs:
         uses: actions/checkout@v2.3.4
 
       - name: Setup .NET SDK
-        uses: actions/setup-dotnet@v1.7.2
-        with:
-          dotnet-version: ${{ env.DOTNET_SDK_VERSION }}
+        uses: actions/setup-dotnet@v1.8.2
 
       - name: Download Steam and install garrysmod
         run: |
@@ -37,7 +34,7 @@ jobs:
       - name: Download GmodDotNet
         working-directory: ./gmod/garrysmod/lua/bin/
         run: |
-             wget https://gleb-krasilich.fra1.digitaloceanspaces.com/GmodNETStorage/storage/gmod-dot-net-linux.${{ env.GMOD_DOT_NET_VERSION }}.tar.gz
+             wget https://github.com/GmodNET/runtime-nightly/releases/download/${{ GMOD_DOT_NET_VERSION }}/gmod-dot-net-linux.${{ GMOD_DOT_NET_VERSION }}.tar.gz
              tar -xvf gmod-dot-net-linux.${{ env.GMOD_DOT_NET_VERSION }}.tar.gz
              rm -rfv gmod-dot-net-linux.${{ env.GMOD_DOT_NET_VERSION }}.tar.gz
 
@@ -66,9 +63,7 @@ jobs:
         uses: actions/checkout@v2.0.0
       
       - name: Setup .NET SDK
-        uses: actions/setup-dotnet@v1.7.2
-        with:
-          dotnet-version: ${{ env.DOTNET_SDK_VERSION }}
+        uses: actions/setup-dotnet@v1.8.2
 
       - name: Download Steam and install Garrys Mod
         shell: pwsh
@@ -84,7 +79,7 @@ jobs:
         working-directory: ./gmod/garrysmod/lua/bin/
         shell: pwsh
         run: |
-             Invoke-WebRequest -Uri https://gleb-krasilich.fra1.digitaloceanspaces.com/GmodNETStorage/storage/gmod-dot-net-windows.${{ env.GMOD_DOT_NET_VERSION }}.zip -OutFile gmodnet.zip
+             Invoke-WebRequest -Uri https://github.com/GmodNET/runtime-nightly/releases/download/${{ GMOD_DOT_NET_VERSION }}/gmod-dot-net-windows.${{ GMOD_DOT_NET_VERSION }}.zip -OutFile gmodnet.zip
              Expand-Archive -Path gmodnet.zip -DestinationPath .\
 
       - name: Copy Lua file
@@ -122,9 +117,7 @@ jobs:
         uses: actions/checkout@v2.0.0
 
       - name: Install .NET SDK
-        uses: actions/setup-dotnet@v1.7.2
-        with:
-          dotnet-version: ${{ env.DOTNET_SDK_VERSION }}
+        uses: actions/setup-dotnet@v1.8.2
 
       - name: Create NuGet package
         run: dotnet pack ./GmodNET.Serilog.Sink/GmodNET.Serilog.Sink.csproj -c Release -o nupkgs
