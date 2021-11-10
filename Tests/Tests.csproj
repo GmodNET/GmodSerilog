@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="GmodNET.API" Version="0.7.0-rc.1.56307663.main" />
+    <PackageReference Include="GmodNET.API" Version="0.7.0-rc.1.58638981.main" />
     <ProjectReference Include="../GmodNET.Serilog.Sink/GmodNET.Serilog.Sink.csproj" />
   </ItemGroup>
 
